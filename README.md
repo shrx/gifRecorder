@@ -17,4 +17,5 @@ Run the script when you want to record your screen activity.
 
 The script first create a temporary directory for screenshots, then combine the screenshots into a GIF animation and export it to your desktop.
 
-The default recording duration is 5 seconds. You can change this by running the script with the optional `-s`, for example: `gifRecorder -s 10` will record for 10 seconds.
+The default recording duration is 5 seconds. You can change this by running the script with the option `-s <seconds>`, for example: `gifRecorder -s 10` will record for 10 seconds.
+You can also enable the verbose mode with the option `-v`.
