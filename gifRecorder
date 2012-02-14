@@ -2,19 +2,21 @@
 
 # released under Creative Commons Attribution-ShareAlike 3.0
 # http://creativecommons.org/licenses/by-sa/3.0/
-# v1.0
+# v1.1
 # 11. 2. 2012
 # dependencies: gifsicle
 
 sflag=
+vflag=
 
-while getopts s: name
+while getopts s:v name
 do
     case $name in
     s)    s=1
           sval="$OPTARG"
           sflag="set";;
-    *)   printf "Usage: [-s seconds]\n" $0
+    v)    vflag=1;;
+    *)   printf "Usage: [-s seconds]\n [-v]" $0
           exit 2;;
     esac
 done
@@ -25,14 +27,22 @@ fi
 if [ -z "$sflag" ]; then
     sval=5
 fi
+
 seconds=$(echo "$sval"*10|bc)
 cd ~/.recorder-temp
+if [ ! -z "$vflag" ]; then
+	echo "Now recording..."
+fi
 for (( i=1; i<=$seconds; i++ ))
 do
    padi=$(printf "%04d" $i)
    screencapture -C -t "gif" "recorderframe""$padi"".gif"
    sleep .1
 done
+if [ ! -z "$vflag" ]; then
+	echo "Recording complete."
+fi
+
 framelist=$(frames=$(ls|grep -a recorderframe);echo ${frames//\n/ })
 named=$(date -j +"%Y-%m-%d")
 namet=$(tim=$(date -j +"%r");echo ${tim//:/.})
@@ -41,4 +51,6 @@ gifsicle -w --delay 10 --loopcount $framelist > "$filename"
 gifsicle -w -b --optimize=2 "$filename"
 mv "$filename" ~/Desktop/
 rm recorderframe*
-echo "Screen recording saved to ~/Desktop/ ."
+if [ ! -z "$vflag" ]; then
+	echo "Screen recording saved to ~/Desktop/""$filename""."
+fi
