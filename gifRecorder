@@ -33,12 +33,13 @@ cd ~/.recorder-temp
 if [ ! -z "$vflag" ]; then
 	echo "Now recording..."
 fi
-for (( i=1; i<=$seconds; i++ ))
+for (( i=1; i<$seconds; i++ ))
 do
    padi=$(printf "%04d" $i)
    screencapture -C -t "gif" "recorderframe""$padi"".gif"
    sleep 0.1
 done
+screencapture -C -t "gif" "recorderframe9999.gif"
 if [ ! -z "$vflag" ]; then
 	echo "Recording complete."
 fi
