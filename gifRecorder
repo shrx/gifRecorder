@@ -16,7 +16,7 @@ do
           sval="$OPTARG"
           sflag="set";;
     v)    vflag=1;;
-    *)   printf "Usage: [-s seconds]\n [-v]" $0
+    *)   printf "Usage: [-s seconds] [-v]\n" $0
           exit 2;;
     esac
 done
@@ -28,7 +28,7 @@ if [ -z "$sflag" ]; then
     sval=5
 fi
 
-seconds=$(echo "$sval"*10|bc)
+seconds=$(echo "$sval"*5|bc)
 cd ~/.recorder-temp
 if [ ! -z "$vflag" ]; then
 	echo "Now recording..."
@@ -37,7 +37,7 @@ for (( i=1; i<=$seconds; i++ ))
 do
    padi=$(printf "%04d" $i)
    screencapture -C -t "gif" "recorderframe""$padi"".gif"
-   sleep .1
+   sleep 0.1
 done
 if [ ! -z "$vflag" ]; then
 	echo "Recording complete."
@@ -47,7 +47,7 @@ framelist=$(frames=$(ls|grep -a recorderframe);echo ${frames//\n/ })
 named=$(date -j +"%Y-%m-%d")
 namet=$(tim=$(date -j +"%r");echo ${tim//:/.})
 filename=$(echo "Screen shot ""$named"" at ""$namet"".gif")
-gifsicle -w --delay 10 --loopcount $framelist > "$filename"
+gifsicle -w --delay 25 --loopcount $framelist > "$filename"
 gifsicle -w -b --optimize=2 "$filename"
 mv "$filename" ~/Desktop/
 rm recorderframe*
