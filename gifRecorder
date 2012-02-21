@@ -9,16 +9,18 @@
 sflag=
 vflag=
 
-while getopts s:v name
+while getopts :s:v name
 do
-    case $name in
-    s)    s=1
-          sval="$OPTARG"
-          sflag="set";;
-    v)    vflag=1;;
-    *)   printf "Usage: [-s seconds] [-v]\n" $0
-          exit 2;;
-    esac
+	case $name in
+	s)	s=1
+		sval="$OPTARG"
+		sflag="set";;
+	v)	vflag=1;;
+	:)	echo "Error: please specify the number of seconds."
+		exit 2;;
+	?)	printf "Usage: [-s seconds] [-v]\n" $0
+		exit 2;;
+	esac
 done
 
 if [ ! -d ~/.recorder-temp ]; then
