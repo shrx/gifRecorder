@@ -23,7 +23,7 @@ do
 	v)	vflag=1;;
 	:)	echo "Error: please specify the number of seconds."
 		exit 2;;
-	?)	printf "Usage: [-s seconds] [-v]\n"
+	?)	printf "Usage: [-s <seconds>] [-c x1,y1-x2,y2] [-v]\n"
 		exit 2;;
 	esac
 done
