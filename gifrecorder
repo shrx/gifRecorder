@@ -2,20 +2,24 @@
 
 # released under Creative Commons Attribution-ShareAlike 3.0
 # http://creativecommons.org/licenses/by-sa/3.0/
-# v1.2
-# 22. 2. 2012
+# v1.3
+# 25. 2. 2012
 # dependencies: gifsicle
 
 #setting optional arguments
 sflag=
 vflag=
+cflag=
 
-while getopts :s:v name
+while getopts :s:c:v name
 do
 	case $name in
 	s)	s=1
 		sval="$OPTARG"
 		sflag="set";;
+	c)	c=1
+		dim="$OPTARG"
+		cflag="set";;
 	v)	vflag=1;;
 	:)	echo "Error: please specify the number of seconds."
 		exit 2;;
@@ -30,7 +34,7 @@ if [ -z "$sflag" ]; then
 fi
 seconds=$(echo "$sval"*5|bc)
 cd /tmp
-if [ ! -z "$vflag" ]; then
+if [ -n "$vflag" ]; then
 	echo "Now recording..."
 fi
 for (( i=1; i<$seconds; i++ ))
@@ -40,7 +44,7 @@ do
    sleep 0.1
 done
 screencapture -C -t "gif" "recorderframe9999.gif"
-if [ ! -z "$vflag" ]; then
+if [ -n "$vflag" ]; then
 	echo "Recording complete."
 fi
 
@@ -49,10 +53,13 @@ framelist=$(frames=$(ls|grep -a recorderframe);echo ${frames//\n/ })
 named=$(date -j +"%Y-%m-%d")
 namet=$(tim=$(date -j +"%r");echo ${tim//:/.})
 filename=$(echo "Screen shot ""$named"" at ""$namet"".gif")
-gifsicle -w --delay 25 --loopcount $framelist > "$filename"
+if [ -n "$cflag" ]; then
+	crop="--crop ""$dim"
+fi
+gifsicle -w --delay 25 --loopcount $crop $framelist > "$filename"
 gifsicle -w -b --optimize=2 "$filename"
 mv "$filename" ~/Desktop/
-if [ ! -z "$vflag" ]; then
+if [ -n "$vflag" ]; then
 	echo "Screen recording saved to ~/Desktop/""$filename""."
 fi
 
