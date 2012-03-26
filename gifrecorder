@@ -2,28 +2,30 @@
 
 # released under Creative Commons Attribution-ShareAlike 3.0
 # http://creativecommons.org/licenses/by-sa/3.0/
-# v1.3
-# 25. 2. 2012
+# v1.4
+# 26. 3. 2012
 # dependencies: gifsicle
 
 #setting optional arguments
 sflag=
 vflag=
 cflag=
+wflag=
 
-while getopts :s:c:v name
+while getopts :s:c:wv name
 do
 	case $name in
 	s)	s=1
 		sval="$OPTARG"
 		sflag="set";;
 	c)	c=1
-		dim="$OPTARG"
+		cropDim="$OPTARG"
 		cflag="set";;
+	w)	wflag=1;;
 	v)	vflag=1;;
 	:)	echo "Error: please specify the number of seconds."
 		exit 2;;
-	?)	printf "Usage: [-s <seconds>] [-c x1,y1-x2,y2] [-v]\n"
+	?)	printf "Usage: [-s <seconds>] [-c x1,y1-x2,y2] [-w] [-v]\n"
 		exit 2;;
 	esac
 done
@@ -54,7 +56,17 @@ named=$(date -j +"%Y-%m-%d")
 namet=$(tim=$(date -j +"%r");echo ${tim//:/.})
 filename=$(echo "Screen shot ""$named"" at ""$namet"".gif")
 if [ -n "$cflag" ]; then
-	crop="--crop ""$dim"
+	crop="--crop ""$cropDim"
+fi
+if [ -n "$wflag" ]; then
+	terminal=$(echo $TERM_PROGRAM)
+	if [ "$terminal" == "Apple_Terminal" ]; then
+		cropDim=$(osascript -e "tell application \"Terminal\" to get the bounds of the first window" | sed "s/,/-/2" | sed "s/ //g")
+		crop="--crop ""$cropDim"
+	elif [ "$terminal" == "iTerm.app" ]; then
+		cropDim=$(osascript -e "tell application \"iterm\" to get the bounds of the first window" | sed "s/,/-/2" | sed "s/ //g")
+		crop="--crop ""$cropDim"
+	fi
 fi
 gifsicle -w --delay 25 --loopcount $crop $framelist > "$filename"
 gifsicle -w -b --optimize=2 "$filename"
