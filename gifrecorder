@@ -12,6 +12,8 @@ vflag=
 cflag=
 wflag=
 
+verbose="-w"
+
 while getopts :s:c:wv name
 do
 	case $name in
@@ -22,7 +24,8 @@ do
 		cropDim="$OPTARG"
 		cflag="set";;
 	w)	wflag=1;;
-	v)	vflag=1;;
+	v)	verbose="-V"
+		vflag="set";;
 	:)	echo "Error: please specify the number of seconds."
 		exit 2;;
 	?)	printf "Usage: [-s <seconds>] [-c x1,y1-x2,y2] [-w] [-v]\n"
@@ -68,8 +71,8 @@ if [ -n "$wflag" ]; then
 		crop="--crop ""$cropDim"
 	fi
 fi
-gifsicle -w --delay 25 --loopcount $crop $framelist > "$filename"
-gifsicle -w -b --optimize=2 "$filename"
+gifsicle $verbose --delay 25 --loopcount $crop $framelist > "$filename"
+gifsicle $verbose -b --optimize=2 "$filename"
 mv "$filename" ~/Desktop/
 if [ -n "$vflag" ]; then
 	echo "Screen recording saved to ~/Desktop/""$filename""."
